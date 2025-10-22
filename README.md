@@ -1,4 +1,5 @@
 ## Tapadoo Android Debug Menu
+A simple library to add a debug menu to your Android app for quick access and visualise Analytics and DataStore data.
 
 ### Installation
 
@@ -117,3 +118,6 @@ And then pass it to the `DebugMenuOverlay` or `DebugMenuAttacher`
     )
 
 ```
+
+## DEMO
+![](./DEMO.gif)

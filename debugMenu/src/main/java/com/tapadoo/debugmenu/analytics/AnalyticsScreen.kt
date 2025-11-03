@@ -20,17 +20,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.tapadoo.debugmenu.analytics.DebugAnalytics
+import com.tapadoo.debugmenu.analytics.DebugAnalytics.events
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun AnalyticsScreen() {
     var invertSort by remember { mutableStateOf(false) }
 
-    val events by derivedStateOf {
-        if (invertSort) {
-            DebugAnalytics.events.toList().sortedBy { it.timestampMs }
-        } else {
-            DebugAnalytics.events.toList().sortedByDescending { it.timestampMs }
+    val events by remember {
+        derivedStateOf {
+            if (invertSort) {
+                DebugAnalytics.events.toList().sortedBy { it.timestampMs }
+            } else {
+                DebugAnalytics.events.toList().sortedByDescending { it.timestampMs }
+            }
         }
     }
 

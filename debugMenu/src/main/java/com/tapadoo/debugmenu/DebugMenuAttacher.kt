@@ -42,10 +42,10 @@ object DebugMenuAttacher {
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
             setContent {
-                DebugMenuOverlay(
-                    dataStores = dataStores,
-                    showFab = true
-                )
+//                DebugMenuOverlay(
+//                    dataStores = dataStores,
+//                    showFab = true
+//                )
             }
         }
         container.addView(composeView)

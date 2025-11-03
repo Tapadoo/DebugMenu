@@ -4,21 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.Modifier
-import androidx.datastore.dataStore
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.tapado.debugmenuDemo.analytics.MockAnalyticsManager
-import com.tapado.debugmenuDemo.data.AppRepository
 import com.tapado.debugmenuDemo.data.demoDataStore
 import com.tapado.debugmenuDemo.ui.DemoScreen
 import com.tapado.debugmenuDemo.ui.DemoViewModel
 import com.tapado.debugmenuDemo.ui.theme.DebugMenuTheme
 import com.tapadoo.debugmenu.DebugMenuOverlay
+import com.tapadoo.debugmenu.analytics.AnalyticsModule
+import com.tapadoo.debugmenu.custom.DebugOption
+import com.tapadoo.debugmenu.datastore.DataStoreModule
 
 class MainActivity : ComponentActivity() {
     private lateinit var viewModel: DemoViewModel
@@ -37,7 +35,16 @@ class MainActivity : ComponentActivity() {
             DebugMenuTheme {
                 Box(Modifier.fillMaxSize()) {
                     DemoScreen(viewModel = viewModel)
-                    DebugMenuOverlay(dataStores = listOf(this@MainActivity.applicationContext.demoDataStore))
+                    DebugMenuOverlay(
+                        modules = listOf(
+                            AnalyticsModule(),
+                            DataStoreModule(
+                                listOf(
+                                    this@MainActivity.applicationContext.demoDataStore
+                                )
+                            ),
+                        )
+                    )
                 }
             }
         }

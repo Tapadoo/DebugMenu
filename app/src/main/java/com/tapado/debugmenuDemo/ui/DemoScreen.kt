@@ -23,11 +23,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.tapadoo.debugmenu.dynamic.DynamicAction
+import com.tapadoo.debugmenu.dynamic.DynamicModuleActions
 
 @Composable
-fun DemoScreen(viewModel: DemoViewModel) {
+fun DemoScreen(viewModel: DemoViewModel, onLoggedIn: () -> Unit) {
     val uiState by viewModel.state.collectAsState()
     val nameInput by viewModel.userNameInput.collectAsState()
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DynamicModuleActions(
+        lifecycleOwner, DynamicAction("Log in") {
+            viewModel.onUserNameChanged("fernando@gmail.com")
+            viewModel.saveUserName()
+            onLoggedIn()
+        }
+    )
+
 
     LaunchedEffect(uiState.userName) {
         // Sync input with current state when it changes externally (e.g., via DebugMenu)
@@ -52,7 +65,7 @@ fun DemoScreen(viewModel: DemoViewModel) {
 
             ElevatedCard(modifier = Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("Observed from DataStore:", fontFamily = FontFamily.Monospace)
+                    Text("Observed from DataStore :", fontFamily = FontFamily.Monospace)
                     Text("user_name = ${uiState.userName}", fontFamily = FontFamily.Monospace)
                     Text("feature_enabled = ${uiState.featureEnabled}", fontFamily = FontFamily.Monospace)
                 }

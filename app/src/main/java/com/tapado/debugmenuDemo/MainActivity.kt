@@ -7,6 +7,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.tapado.debugmenuDemo.data.demoDataStore
@@ -15,7 +20,8 @@ import com.tapado.debugmenuDemo.ui.DemoViewModel
 import com.tapado.debugmenuDemo.ui.theme.DebugMenuTheme
 import com.tapadoo.debugmenu.DebugMenuOverlay
 import com.tapadoo.debugmenu.analytics.AnalyticsModule
-import com.tapadoo.debugmenu.custom.DebugOption
+import com.tapadoo.debugmenu.dynamic.DynamicModule
+import com.tapadoo.debugmenu.dynamic.DynamicAction
 import com.tapadoo.debugmenu.datastore.DataStoreModule
 
 class MainActivity : ComponentActivity() {
@@ -33,10 +39,22 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             DebugMenuTheme {
+                var loggedIn by remember { mutableStateOf(false) }
+
                 Box(Modifier.fillMaxSize()) {
-                    DemoScreen(viewModel = viewModel)
+                    if(!loggedIn) {
+                        DemoScreen(viewModel = viewModel) { loggedIn = true }
+                    } else {
+                        Text("Logged in!")
+                    }
                     DebugMenuOverlay(
                         modules = listOf(
+                            DynamicModule(
+                                title = "Custom Module",
+                                globalActions = listOf(
+                                    DynamicAction("Hey"){}
+                                )
+                            ),
                             AnalyticsModule(),
                             DataStoreModule(
                                 listOf(

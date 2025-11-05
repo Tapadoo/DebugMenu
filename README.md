@@ -301,6 +301,7 @@ DebugMenuOverlay(
 These will only be displayed when the user is in the screen where they are added, ideal for actions that are only
 relevant to that screen.
 
+Compose:
 ```kotlin
 @Composable
 fun YourScreenComposable() {
@@ -313,6 +314,19 @@ fun YourScreenComposable() {
 }
 ```
 
+Fragment/Activity:
+```kotlin
+ class MyFragment : Fragment() {
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+         registerDynamicModuleActions(
+             DynamicAction("Action 1") { /* action 1 */ },
+         )
+     }
+ }
+
+```
+
 </details>
 
 ### Creating your own Module
@@ -320,3 +334,6 @@ fun YourScreenComposable() {
 You can create custom modules to display any debugging information specific to your app. For example, a network request
 monitor, feature flags viewer, or app configuration inspector. Just extend the `DebugMenuModule` class and implement its
 methods.
+
+
+Made with Love by [Tapadoo](https://tapadoo.com)

@@ -15,6 +15,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
+import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
@@ -90,8 +91,10 @@ fun DebugMenuOverlay(
                     Column(
                         modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer)
                     ) {
-                        if(modules.size > 1) {
-                            PrimaryTabRow(selectedTabIndex = selectedIndex) {
+                        if (modules.size > 1) {
+                            PrimaryScrollableTabRow(
+                                selectedTabIndex = selectedIndex,
+                            ) {
                                 modules.forEach { module ->
                                     Tab(
                                         selected = selected == module,
@@ -100,7 +103,6 @@ fun DebugMenuOverlay(
                                 }
                             }
                         }
-
                         Surface {
                             selected.Content()
                         }

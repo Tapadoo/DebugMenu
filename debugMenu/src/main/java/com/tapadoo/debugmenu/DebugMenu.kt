@@ -52,6 +52,10 @@ fun DebugMenuOverlay(
     colorScheme: ColorScheme = getTheme()
 ) {
     var showContent by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    var selected by remember { mutableStateOf<DebugMenuModule>(modules.first()) }
+    val selectedIndex by remember { derivedStateOf { modules.indexOf(selected) } }
+
     MaterialTheme(
         colorScheme = colorScheme,
     ) {
@@ -65,9 +69,6 @@ fun DebugMenuOverlay(
             }
         }
         if (showContent) {
-            val scope = rememberCoroutineScope()
-            var selected by remember { mutableStateOf<DebugMenuModule>(modules.first()) }
-            val selectedIndex by remember { derivedStateOf { modules.indexOf(selected) } }
 
             ModalBottomSheet(
                 onDismissRequest = {

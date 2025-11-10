@@ -287,6 +287,8 @@ class DemoApp : Application() {
 }
 ```
 
+![Debug Menu Logging Module Demo](https://github.com/Tapadoo/DebugMenu/blob/main/LOGS_DEMO.gif?raw=true)
+
 </details>
 
 <details>
@@ -433,6 +435,8 @@ val okHttpClient = OkHttpClient.Builder()
     .addInterceptor(DebugMenuInterceptor)
     .build()
 ```
+
+![Debug Menu Network Module Demo](https://github.com/Tapadoo/DebugMenu/blob/main/NETWORK_DEMO.gif?raw=true)
 
 </details>
 

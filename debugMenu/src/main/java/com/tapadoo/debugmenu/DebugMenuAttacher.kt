@@ -20,10 +20,17 @@ object DebugMenuAttacher {
     fun attachToApplication(
         application: Application,
         modules: List<DebugMenuModule>,
+        showFab: Boolean = true,
+        enableShake: Boolean = false,
     ) {
         application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: android.os.Bundle?) {
-                DebugMenuAttacher.attach(activity, modules)
+                try {
+                    // When attaching to an app that uses an Activity as a splash screen, it can crash
+                    DebugMenuAttacher.attach(activity, modules, showFab, enableShake)
+                } catch (e: Exception) {
+
+                }
             }
 
             override fun onActivityStarted(activity: Activity) {}
@@ -41,6 +48,8 @@ object DebugMenuAttacher {
     fun attach(
         activity: Activity,
         modules: List<DebugMenuModule>,
+        showFab: Boolean = true,
+        enableShake: Boolean = false,
     ) = runCatching {
         val decor = activity.window?.decorView as? ViewGroup ?: return@runCatching
         // Avoid duplicates
@@ -66,7 +75,8 @@ object DebugMenuAttacher {
             )
             setContent {
                 DebugMenuOverlay(
-                    showFab = true,
+                    showFab = showFab,
+                    enableShake = enableShake,
                     modules = modules,
                 )
             }

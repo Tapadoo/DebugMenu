@@ -27,6 +27,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,7 +36,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import com.tapadoo.debugmenu.analytics.AnalyticsModule
 import com.tapadoo.debugmenu.module.DebugMenuModule
@@ -48,14 +51,37 @@ fun DebugMenuOverlay(
     modules: List<DebugMenuModule> = listOf(AnalyticsModule()),
     modifier: Modifier = Modifier,
     showFab: Boolean = true,
+    enableShake: Boolean = false,
     sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     colorScheme: ColorScheme = getTheme()
 ) {
+    val haptics = LocalHapticFeedback.current
+    val context = LocalContext.current
+
+
     var showContent by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     var selected by remember { mutableStateOf<DebugMenuModule>(modules.first()) }
     val selectedIndex by remember { derivedStateOf { modules.indexOf(selected) } }
 
+
+    // Shake detector
+    if (enableShake) {
+        val shakeDetector = remember {
+            ShakeDetector(context) {
+                showContent = true
+                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+            }
+        }
+
+        DisposableEffect(Unit) {
+            shakeDetector.start()
+            onDispose {
+                shakeDetector.stop()
+            }
+        }
+    }
+    
     MaterialTheme(
         colorScheme = colorScheme,
     ) {

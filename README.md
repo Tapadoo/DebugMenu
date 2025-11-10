@@ -10,7 +10,7 @@ inspect DataStore preferences, monitor logs, and create custom debugging modules
 Currently, there are a couple of other debug menu libraries,
 like [Lens-Logger](https://github.com/farhazulMullick/Lens-Logger/tree/feat/log-datastore)
 and [Beagle](https://github.com/pandulapeter/beagle), however, they were either focused on a limited set of features or
-interfered with the LayoutInpector in Android Studio.
+interfered with the LayoutInspector in Android Studio.
 
 This library offers a lightweight, easy-to-use, and modular debug menu that you can easily integrate into your app and
 customise to your needs.
@@ -33,7 +33,7 @@ customise to your needs.
 
 ### Basic Usage
 
-In order to use the library, you first need to add the FAB to your Activity/Composable; this changes depending on the
+To use the library, you first need to add the FAB to your Activity/Composable; this changes depending on the
 project.
 
 <details>
@@ -111,6 +111,38 @@ class MainActivity : ComponentActivity() {
 
 </details>
 
+### Showing the Debug Menu
+
+<details>
+<summary>FAB Button</summary>
+With all the usage methods above, you can also pass a `showFab` parameter to show or hide the FAB button.
+
+```kotlin
+DebugMenuOverlay(
+    showFab = true, // <-- Only open through the FAB button
+    enableShake = false, // <-- Disable shake to open
+    modules = listOf(
+        // your modules...
+    )
+)
+```
+</details>
+
+<details>
+<summary> Shake to Open </summary>
+If you only want the menu to be opened through shake, you can pass `enableShake` to `true` and disable the FAB button.
+
+```kotlin
+DebugMenuOverlay(
+    showFab = false, // <-- Disable FAB button
+    enableShake = true, // <-- Enable shake to open
+    modules = listOf(
+        // your modules...
+    )
+)
+```
+</details>
+
 ## Integrating Modules
 
 > Note: Modules determine the order in which they are displayed in the debug menu.
@@ -121,7 +153,8 @@ class MainActivity : ComponentActivity() {
 
 **Adding Analytics Module**
 
-Just add the `DebugAnalytics` singleton to your list of Modules, and you're good to go.
+First, to show the module, you need to add the `AnalyticsModule` to your list of Modules. Then, you can use the
+`DebugAnalytics` singleton to log events.
 
 ```kotlin
 DebugMenuOverlay(
@@ -140,7 +173,7 @@ just add the event to the `DebugAnalytics` singleton, and it will be logged in t
 
 > **Note:** The signature of the `logEvent` method is the same as Firebase Analytics, so if you're using Firebase
 > Analytics,
-> you can just call it with the same signature.
+> you can just call it in the same way.
 
 ```kotlin
 class AnalyticsManager {
@@ -161,7 +194,7 @@ class AnalyticsManager {
 
 **Adding DataStore Module**
 
-Just add the `DataStoreModule` class to your list of Modules, and pass the list of DataStores and you're good to go. The
+Just add the `DataStoreModule` class to your list of Modules, and pass the list of DataStores and, you're good to go. The
 UI Will automatically generate the UI for every entry.
 
 ```kotlin
@@ -261,7 +294,7 @@ class DemoApp : Application() {
 <br/>
 The dynamic module allows you to add custom actions to the debug menu. They can either be:
 
-- Global actions: These actions are displayed in the debug menu, and can be triggered from anywhere in the app.
+- Global actions: These actions are displayed in the debug menu and can be triggered from anywhere in the app.
 - Dynamic Actions: These actions are only displayed when the user is in a specific screen and get automatically removed
   when the user navigates away from that screen.
 

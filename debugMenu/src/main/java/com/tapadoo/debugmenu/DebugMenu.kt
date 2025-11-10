@@ -60,6 +60,10 @@ fun DebugMenuOverlay(
 
 
     var showContent by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    var selected by remember { mutableStateOf<DebugMenuModule>(modules.first()) }
+    val selectedIndex by remember { derivedStateOf { modules.indexOf(selected) } }
+
 
     // Shake detector
     if (enableShake) {
@@ -91,9 +95,6 @@ fun DebugMenuOverlay(
             }
         }
         if (showContent) {
-            val scope = rememberCoroutineScope()
-            var selected by remember { mutableStateOf<DebugMenuModule>(modules.first()) }
-            val selectedIndex by remember { derivedStateOf { modules.indexOf(selected) } }
 
             ModalBottomSheet(
                 onDismissRequest = {

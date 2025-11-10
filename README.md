@@ -362,6 +362,80 @@ Fragment/Activity:
 
 </details>
 
+<details>
+<summary>Network Module</summary>
+The network module allows you to monitor network requests in the debug menu as well as copying the request body to the
+clipboard or multiple requests at once.
+
+**Adding the module**
+
+```kotlin
+DebugMenuAttacher.attach(
+    this,
+    modules = listOf(
+        NetworkModule()
+        // Rest of your modules...
+    ),
+)
+// or
+DebugMenuOverlay(
+    modules = listOf(
+        NetworkModule()
+        // Rest of your modules...
+    )
+)
+```
+
+**Intercepting Network Requests**
+> Note: This library does not include out-of-the-box integration with OkHttp or any other networking library. Instead,
+> you need to intercept the requests yourself and add them to the `DebugNetworkRequests` singleton.
+
+
+- OKHttp Interceptor (Example):
+```kotlin
+object DebugMenuInterceptor : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request()
+        val startTime = System.currentTimeMillis()
+        val response = chain.proceed(request)
+        val duration = System.currentTimeMillis() - startTime
+        var responseBodyString: String? = null
+        response.body?.let { responseBody ->
+            val source = responseBody.source()
+            source.request(Long.MAX_VALUE)
+            val buffer = source.buffer
+            responseBodyString = buffer.clone().readString(responseBody.contentType()?.charset() ?: Charsets.UTF_8)
+        }
+
+        val debugRequest = DebugNetworkRequest(
+            url = request.url.toString(),
+            method = request.method,
+            headers = request.headers.toMap(),
+            responseHeaders = response.headers.toMap(),
+            body = request.body?.toString() ?: "",
+            timestamp = startTime,
+            duration = duration,
+            isSuccessful = response.isSuccessful,
+            code = response.code,
+            error = if (!response.isSuccessful) response.message else null,
+            response = responseBodyString,
+            requestSize = request.body?.contentLength() ?: 0
+        )
+
+        DebugNetworkRequests.add(debugRequest)
+        return response
+    }
+}
+
+// Add the interceptor to your OkHttp client
+
+val okHttpClient = OkHttpClient.Builder()
+    .addInterceptor(DebugMenuInterceptor)
+    .build()
+```
+
+</details>
+
 ### Creating your own Module
 
 You can create custom modules to display any debugging information specific to your app. For example, a network request

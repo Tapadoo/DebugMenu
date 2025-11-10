@@ -26,7 +26,11 @@ import com.tapadoo.debugmenu.dynamic.DynamicAction
 import com.tapadoo.debugmenu.dynamic.DynamicModule
 import com.tapadoo.debugmenu.logs.DebugLogs
 import com.tapadoo.debugmenu.logs.LoggingModule
+import com.tapadoo.debugmenu.network.DebugNetworkEvents
+import com.tapadoo.debugmenu.network.DebugNetworkRequest
+import com.tapadoo.debugmenu.network.NetworkModule
 import timber.log.Timber
+import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
     private lateinit var viewModel: DemoViewModel
@@ -84,6 +88,12 @@ class MainActivity : ComponentActivity() {
                                 globalActions = listOf(
                                     DynamicAction("Global Action 1") {
                                           // Perform global action
+                                    },
+                                    DynamicAction("Add API Call") {
+                                        // Mocking API call / Intercept
+                                        DebugNetworkEvents.addEvent(
+                                            DebugNetworkRequest.random()
+                                        )
                                     }
                                 )
                             ),
@@ -94,10 +104,36 @@ class MainActivity : ComponentActivity() {
                                     this@MainActivity.applicationContext.demoDataStore
                                 )
                             ),
+                            NetworkModule()
                         ),
                     )
                 }
             }
         }
     }
+}
+
+private fun DebugNetworkRequest.Companion.random(): DebugNetworkRequest {
+    val methods = listOf("GET", "POST", "PUT", "DELETE")
+    val urls = listOf(
+        "https://api.example.com/users",
+        "https://api.example.com/products",
+        "https://api.example.com/orders"
+    )
+    val successful = Random.nextBoolean()
+
+    return DebugNetworkRequest(
+        url = urls.random(),
+        method = methods.random(),
+        headers = mapOf("Content-Type" to "application/json"),
+        responseHeaders = mapOf("Content-Type" to "application/json"),
+        body = """{"id": ${Random.nextInt(1000)}}""",
+        timestamp = System.currentTimeMillis(),
+        durationMs = Random.nextLong(100, 2000),
+        isSuccessful = successful,
+        code = if (successful) 200 else 400,
+        error = if (!successful) "Bad Request" else null,
+        response = if (successful) """{"status": "success"}""" else null,
+        requestSize = Random.nextLong(100, 5000)
+    )
 }

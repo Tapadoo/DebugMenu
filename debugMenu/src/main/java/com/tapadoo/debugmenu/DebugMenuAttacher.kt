@@ -8,6 +8,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.core.view.ViewCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import com.tapadoo.debugmenu.module.DebugMenuModule
 
 /**
@@ -52,6 +53,8 @@ object DebugMenuAttacher {
         enableShake: Boolean = false,
     ) = runCatching {
         val decor = activity.window?.decorView as? ViewGroup ?: return@runCatching
+        if(decor.findViewTreeLifecycleOwner() == null) return@runCatching
+
         // Avoid duplicates
         val existing = decor.findViewWithTag<FrameLayout>(TAG)
         if (existing != null) return@runCatching

@@ -10,13 +10,13 @@ version = "1.0.6"
 
 publishing {
     publications {
-        register<MavenPublication>("default") {
+        register<MavenPublication>("jitpack") {
             groupId = project.group.toString()
             artifactId = "DebugMenu"
             version = project.version.toString()
 
             afterEvaluate {
-                from(components["default"])
+                from(components["jitpack"])
             }
         }
     }
@@ -52,7 +52,7 @@ android {
     }
 
     publishing {
-        multipleVariants {
+        multipleVariants("jitpack") {
             includeBuildTypeValues("debug", "release")
             withSourcesJar()
             withJavadocJar()
